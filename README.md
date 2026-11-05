@@ -97,9 +97,11 @@ allure open allure-report
 
 Installs .NET 10, restores, builds (Release), installs Chromium, runs tests, and publishes TRX results, the Allure report and raw results, screenshots, and videos as artifacts.
 Add following variables in your pipeline
+```bash
 BROWSER=Chromium
 HEADLESS=true
 VIDEO_RECORDING=true
+```
 
 ## Adding a New Test
 
