@@ -1,0 +1,116 @@
+trigger:
+  branches:
+    include:
+      - main
+pr:
+  branches:
+    include:
+      - main      
+      
+pool:
+  vmImage: 'ubuntu-26.04'
+
+variables:
+  buildConfiguration: 'Release'
+  solution: 'PlaywrightBDD.slnx'
+  testProjectDirectory: 'PlaywrightBDD.Tests'
+  testProject: 'PlaywrightBDD.Tests/PlaywrightBDD.Tests.csproj'
+  testResultsDirectory: '$(Agent.TempDirectory)'  
+  allureResultsDirectory: '$(Build.SourcesDirectory)/$(testProjectDirectory)/bin/$(buildConfiguration)/net10.0/allure-results'
+  screenshotsDirectory: '$(Build.SourcesDirectory)/$(testProjectDirectory)/bin/$(buildConfiguration)/net10.0/Screenshots'
+  videosDirectory: '$(Build.SourcesDirectory)/$(testProjectDirectory)/bin/$(buildConfiguration)/net10.0/Videos'
+  tracingDirectory: '$(Build.SourcesDirectory)/$(testProjectDirectory)/bin/$(buildConfiguration)/net10.0/Tracing'
+
+steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET 10 SDK'
+    inputs:
+      packageType: 'sdk'
+      version: '10.0.x'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Restore NuGet packages'
+    inputs:
+      command: 'restore'
+      projects: '$(solution)'
+
+  - task: PowerShell@2
+    displayName: 'Clean solution'
+    inputs:
+     targetType: 'inline'
+     script: |
+       dotnet clean
+     pwsh: true
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Build solution'
+    inputs:
+      command: 'build'
+      projects: '$(solution)'
+      arguments: '--configuration $(buildConfiguration) --no-restore'
+
+  - task: PowerShell@2
+    displayName: 'Install Playwright browsers'
+    inputs:
+      targetType: 'inline'      
+      script: |
+        ./bin/$(buildConfiguration)/net10.0/playwright.ps1 install --with-deps chromium
+      workingDirectory: '$(testProjectDirectory)'
+      pwsh: true
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run tests'
+    inputs:
+      command: 'test'
+      projects: '$(testProject)'
+      arguments: >
+        --configuration $(buildConfiguration)
+        --no-build
+        --logger "trx;LogFileName=PlaywrightTestResults.trx" 
+        
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Test results in .trx format'
+    condition: succeededOrFailed()
+    inputs:
+      targetPath: '$(testResultsDirectory)/PlaywrightTestResults.trx'
+      artifact: 'playwright-test-results'
+      publishLocation: 'pipeline'
+
+  - task: PublishAllureReport@2
+    displayName: 'Generate and publish Allure Test Report'
+    condition: succeededOrFailed()
+    inputs:
+      testResultsDir: '$(allureResultsDirectory)'
+      reportName: PlaywrighTestReport
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish raw Allure results'
+    condition: succeededOrFailed()
+    inputs:
+      targetPath: '$(allureResultsDirectory)'
+      artifact: 'allure-results'
+      publishLocation: 'pipeline'
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Screenshots'
+    condition: succeededOrFailed()
+    inputs:
+      targetPath: '$(screenshotsDirectory)'
+      artifact: 'Screenshots'
+      publishLocation: 'pipeline'
+      
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Tracing Results'
+    condition: succeededOrFailed()
+    inputs:
+      targetPath: '$(tracingDirectory)'
+      artifact: 'TracingLog'
+      publishLocation: 'pipeline'
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Videos'
+    condition: eq(variables['VIDEO_RECORDING'], true)
+    inputs:
+      targetPath: '$(videosDirectory)'
+      artifact: 'Videos'
+      publishLocation: 'pipeline'

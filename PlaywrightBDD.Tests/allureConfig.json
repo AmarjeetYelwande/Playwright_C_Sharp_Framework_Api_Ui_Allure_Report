@@ -1,0 +1,37 @@
+{
+  "$schema": "https://raw.githubusercontent.com/allure-framework/allure-csharp/2.15.0/src/Allure.Reqnroll/Schemas/allureConfig.schema.json",
+  "allure": {
+    "directory": "allure-results",
+    "links": [
+      "{link}",
+      "{issue}",
+      "{tms}"
+    ],
+    "failExceptions": [
+      "NUnit.Framework.AssertionException"
+    ],
+    "gherkinPatterns": {
+      "grouping": {
+        "suites": {
+          "parentSuite": "allure\\.parentSuite:(.+)",
+          "suite": "allure\\.suite:(.+)",
+          "subSuite": "allure\\.subSuite:(.+)"
+        },
+        "behaviors": {
+          "epic": "allure\\.epic:(.+)",
+          "story": "allure\\.story:(.+)"
+        }
+      },
+      "metadata": {
+        "owner": "allure\\.owner:(.+)",
+        "severity": "(normal|blocker|critical|minor|trivial)",
+        "label": "allure\\.label\\.([^:]+):(.+)"
+      },
+      "links": {
+        "link": "allure\\.link:(.+)",
+        "issue": "allure\\.issue:(.+)",
+        "tms": "allure\\.tms:(.+)"
+      }
+    }
+  }
+}

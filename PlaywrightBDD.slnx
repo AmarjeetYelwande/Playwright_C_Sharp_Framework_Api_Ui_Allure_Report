@@ -1,0 +1,10 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />    
+    <BuildType Name="Release" />
+  </Configurations>
+  <Folder Name="/PlaywrightBDD/">
+    <Project Path="PlaywrightBDD.Framework/PlaywrightBDD.Framework.csproj" />
+    <Project Path="PlaywrightBDD.Tests/PlaywrightBDD.Tests.csproj" />
+  </Folder>  
+</Solution>

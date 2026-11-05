@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <ReqnrollDeleteObsoleteCodeBehindFilesOnClean>true</ReqnrollDeleteObsoleteCodeBehindFilesOnClean>    
+  </PropertyGroup> 
+
+  <ItemGroup>
+    <PackageReference Include="Allure.NUnit" Version="3.0.0-preview.1" />
+    <PackageReference Include="Allure.Reqnroll" Version="3.0.0-preview.1" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+    <PackageReference Include="RandomDataGenerator.Net" Version="1.0.19.1" />
+    <PackageReference Include="Reqnroll" Version="3.3.4" />
+    <PackageReference Include="Reqnroll.NUnit" Version="3.3.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PlaywrightBDD.Framework\PlaywrightBDD.Framework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="allureConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="reqnroll.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ReqnrollFeatureFile Update="Features\UI\BasicNavigation.feature">
+      <NormalizedLogicalName>Features/Navigation.feature</NormalizedLogicalName>
+      <NormalizedRelativeDir>Features/</NormalizedRelativeDir>
+      <CodeBehindFile>Features/Navigation.feature.cs</CodeBehindFile>
+      <MessagesFile>obj\Debug/net10.0/Features/Navigation.feature.ndjson</MessagesFile>
+      <MessagesResourceName>Features/Navigation.feature.ndjson</MessagesResourceName>
+      <FeatureFileResourceName>Features/Navigation.feature</FeatureFileResourceName>
+    </ReqnrollFeatureFile>
+  </ItemGroup>
+
+</Project>

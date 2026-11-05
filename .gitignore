@@ -1,0 +1,17 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+
+## Playwright
+.playwright/
+test-results/
+playwright-report/
+
+## Allure
+allure-results/
+allure-report/
+
+## OS
+.DS_Store
